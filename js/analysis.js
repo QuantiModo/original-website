@@ -1,9 +1,9 @@
 var scatterplotChart, timeLineChart;
 
 var inputVariableMeasurements, outputVariableMeasurements;
+var inputVariableMeasurementsFromApi;
+var outputVariableMeasurementsFromApi;
 var xyVariableValues;
-
-var userVariableSettings = undefined;
 
 var defaultSelectSpeed = 300;
 var timeShiftedValue = null;
@@ -167,7 +167,6 @@ $(document).ready(function() {
 	$(".date-to").datepicker({
 		dateFormat : "M d, yy",
 		showAnim : "blind",
-		defaultDate : "+1w",
 		changeMonth : true,
 		numberOfMonths : 1,
 		defaultDate : new Date(),
@@ -291,7 +290,7 @@ function setupVariablesSelectors() {
 	});
 
 	$("#shift-backward").click(function() {
-		if (timeShiftedValue != null) {
+		if (timeShiftedValue !== null) {
 			timeShiftedValue--;
 		} else {
 			timeShiftedValue = -1;
@@ -300,7 +299,7 @@ function setupVariablesSelectors() {
 	});
 
 	$("#shift-forward").click(function() {
-		if (timeShiftedValue != null) {
+		if (timeShiftedValue !== null) {
 			timeShiftedValue++;
 		} else {
 			timeShiftedValue = 1;
@@ -336,8 +335,7 @@ function refreshCategoriesSelect(categorySelect, varsSelect, selectedCategoryId)
 //		});
 //		categorySelect.append('</optgroup>');
 		$.each(json, function(key, val) {
-			categorySelect.append("<option global='" + val.global + "' value='" + val.id + "'>" + val.name
-					+ "</value>");
+			categorySelect.append("<option global='" + val.global + "' value='" + val.id + "'>" + val.name + "</value>");
 		});
 
 		if (selectedCategoryId) {
@@ -403,14 +401,12 @@ function variableCategoryChange(categorySelect, varsSelect,behaviour,userSetting
 //		}
 		$.each(json, function(key, val) {
 			var name = (val.application ? val.application + " , " : "") + val.name;
-			varsSelect.append("<option global='" + val.global + "' var_type='"
-					+ val.type + "' value='" + val.id + "'>" + name + "</value>");
+			varsSelect.append("<option global='" + val.global + "' var_type='" + val.type + "' value='" + val.id + "'>" + name + "</value>");
 		});
 
 		if (userSettingsInfo) {
 			varsSelect.find(
-					"[value='" + userSettingsInfo.id + "'][var_type='"
-							+ userSettingsInfo.type + "']").attr("selected", "selected");
+					"[value='" + userSettingsInfo.id + "'][var_type='" + userSettingsInfo.type + "']").attr("selected", "selected");
 		} else if(json[0]) {
 			varsSelect.val(json[0].id);
 		}
@@ -449,7 +445,7 @@ function resetTimeShift() {
 }
 
 function shiftDate(grouping, date) {
-	var correctedTimeShiftValue = !timeShiftedValue || timeShiftedValue == null ? 0 : timeShiftedValue;
+	var correctedTimeShiftValue = !timeShiftedValue || timeShiftedValue === null ? 0 : timeShiftedValue;
 	return Number(date) + correctedTimeShiftValue * timeShiftPossibleValues[grouping];
 }
 
@@ -458,6 +454,8 @@ function updateValuesAndDrawGraphs() {
 	var fromDate = $(".date-from").val();
 	var toDate = $(".date-to").val();
 	var grouping = $('.select-duration .active').attr('grouping');
+
+	var groupingWidthMilliseconds = timeShiftPossibleValues[grouping];
 
 	var inputVarType = $('#input_vars_select option:selected').attr("var_type");
 	var outputVarType = $('#output_vars_select option:selected').attr("var_type");
@@ -495,12 +493,16 @@ function retrieveValuesAndDrawGraphs(inputVariableName, outputVariableName, from
 		outputVariableName = 'Guiltiness';
 	}
 
+	if(!grouping){
+		grouping = 86400;
+	}
+
 	$.when(
-			$.getJSON('/api/v1/measurements?variableName=' + inputVariableName + '&limit=0', function(json) {
-				inputVariableMeasurements = json;
+			$.getJSON('/api/v1/measurements/daily?variableName=' + inputVariableName + '&limit=0', function(json) {
+				inputVariableMeasurementsFromApi = json;
 			}),
-			$.getJSON('/api/v1/measurements?variableName=' + outputVariableName + '&limit=0', function(json) {
-				outputVariableMeasurements = json;
+			$.getJSON('/api/v1/measurements/daily?variableName=' + outputVariableName + '&limit=0', function(json) {
+				outputVariableMeasurementsFromApi = json;
 			})).done(function() {
 		// $('#show_original').click();
 		showOriginal();
@@ -510,54 +512,62 @@ function retrieveValuesAndDrawGraphs(inputVariableName, outputVariableName, from
 }
 
 function showOriginal() {
-	inputVariableValues = fullInputVariableInfo.groupedValues;
-	outputVariableValues = fullOutputVariableInfo.groupedValues;
-	if (/*inputVariableValues == undefined ||*/ $.isEmptyObject(inputVariableValues)) {
-		alert("You don't have data for " + $("#input_apps_select option:selected").text() + " "
-			+ $("#input_vars_select option:selected").text());
+
+	if (/*inputVariableMeasurements == undefined ||*/ $.isEmptyObject(inputVariableMeasurementsFromApi)) {
+		alert("You don't have data for " + $("#input_apps_select option:selected").text() + " " + $("#input_vars_select option:selected").text());
 		return;
 	}
-	if (/*outputVariableValues == undefined ||*/ $.isEmptyObject(outputVariableValues)) {
-		alert("You don't have data for " + $("#output_apps_select option:selected").text() + " "
-			+ $("#output_vars_select option:selected").text());
+	if (/*outputVariableMeasurements == undefined ||*/ $.isEmptyObject(outputVariableMeasurementsFromApi)) {
+		alert("You don't have data for " + $("#output_apps_select option:selected").text() + " " + $("#output_vars_select option:selected").text());
 		return;
 	}
-	var dates = $.map(inputVariableValues, function(value, index) {
-		return index;
-	});
+
+	var inputMeasurementStartTimeMillisecondsArray = [];
+	var inputValuesIndexedByStartTimeMilliseconds = [];
+	for (var i = 0; i < inputVariableMeasurementsFromApi.length; i++){
+		inputMeasurementStartTimeMillisecondsArray.push(inputVariableMeasurementsFromApi[i].startTimeEpoch * 1000);
+		inputValuesIndexedByStartTimeMilliseconds[inputVariableMeasurementsFromApi[i].startTimeEpoch * 1000] = inputVariableMeasurementsFromApi[i].value;
+	}
+
+	var outputValuesIndexedByStartTimeMilliseconds = [];
+	for (i = 0; i < outputVariableMeasurementsFromApi.length; i++){
+		outputValuesIndexedByStartTimeMilliseconds[outputVariableMeasurementsFromApi[i].startTimeEpoch * 1000] = outputVariableMeasurementsFromApi[i].value;
+	}
+
 	xyVariableValues = [];
 	var grouping = $('.select-duration .active').attr('grouping');
-	$.each(dates, function(idx, date) {
-		var outputVar = outputVariableValues[shiftDate(grouping, date)];
-		if (outputVar != undefined) {
+	var groupingWidthMilliseconds = timeShiftPossibleValues[grouping];
+	var shiftedOutputVariableValue;
+	var inputValuesForTimeline = [];
+	var outputValuesForTimeline = [];
+	$.each(inputMeasurementStartTimeMillisecondsArray, function(idx, inputMeasurementStartTimeMilliseconds) {
+		//shiftedOutputVariableValue = outputValuesIndexedByStartTimeMilliseconds[shiftDate(grouping, inputMeasurementStartTimeMilliseconds)];
+		shiftedOutputVariableValue = outputValuesIndexedByStartTimeMilliseconds[inputMeasurementStartTimeMilliseconds];
+		if (shiftedOutputVariableValue) {
 			/*
 			 * http://stackoverflow.com/questions/9453421/how-to-round-float-numbers
 			 */
-			xyVariableValues.push([ Number(inputVariableValues[date].toFixed(2)), Number(outputVar.toFixed(2)) ]);
+			xyVariableValues.push([ Number(inputValuesIndexedByStartTimeMilliseconds[inputMeasurementStartTimeMilliseconds].toFixed(2)), Number(shiftedOutputVariableValue.toFixed(2)) ]);
+			inputValuesForTimeline.push(Number(inputValuesIndexedByStartTimeMilliseconds[inputMeasurementStartTimeMilliseconds].toFixed(2)));
+			outputValuesForTimeline.push(Number(shiftedOutputVariableValue.toFixed(2)));
 			/*
 			 * not works (why?)
 			 * http://api.highcharts.com/highcharts#tooltip.valueDecimals
 			 */
-//			xyVariableValues.push([ inputVariableValues[date], outputVar ]);
+//			xyVariableValues.push([ inputVariableMeasurements[date], outputVar ]);
 		}
 	});
 	drawScatterplot();
-	var xValues = $.map(inputVariableValues, function(value, index) {
-		return [ [ Number(index), Number(value.toFixed(2)) ] ];
-	});
-	var yValues = $.map(outputVariableValues, function(value, index) {
-		return [ [ shiftDate(grouping, index), Number(value.toFixed(2)) ] ];
-	});
-	drawTimeLineChart(xValues, yValues);
+	drawTimeLineChart(inputValuesForTimeline, outputValuesForTimeline);
 
-	var pearsonCoeff = mathUtils.calculatePearsonsCorrelation(xyVariableValues);
-	drawPearsonCoeff(pearsonCoeff);
+	var pearsonCorrelationCoefficient = mathUtils.calculatePearsonsCorrelation(xyVariableValues);
+	drawPearsonCoeff(pearsonCorrelationCoefficient);
 }
 
 function drawPearsonCoeff(pearsonCoeff) {
 	var pearsonCoeffSignificance = mathUtils.calculatePearsonsCorrelationSignificance(pearsonCoeff);
 	var customizedSigMessage = significanceMessage.replace("{1}", pearsonCoeffSignificance).replace("{2}",
-			inputVariableMeasurements.name).replace("{3}", outputVariableMeasurements.name);
+		inputVariableMeasurementsFromApi[0].variableName).replace("{3}", outputVariableMeasurementsFromApi[0].variableName);
 	$('.statistical-relation h4').html(customizedSigMessage + " " + Math.round(pearsonCoeff * 100) + "%");
 	adjustPointer(pearsonCoeff);
 }
@@ -567,18 +577,18 @@ function fillUpByZeroes() {
 }
 
 function fillUpByAVG() {
-	var xAverage = mathUtils.calculateAverageForObjectValues(inputVariableValues);
-	var yAverage = mathUtils.calculateAverageForObjectValues(outputVariableValues);
+	var xAverage = mathUtils.calculateAverageForObjectValues(inputValuesIndexedByStartTimeMilliseconds);
+	var yAverage = mathUtils.calculateAverageForObjectValues(outputValuesIndexedByStartTimeMilliseconds);
 	fillUpByDefaultValue(xAverage, yAverage);
 }
 
 function fillUpByDefaultValue(xDefaultValue, yDefaultValue) {
-	var dates = $.map(inputVariableValues, function(value, index) {
+	var dates = $.map(inputVariableMeasurements, function(value, index) {
 		return index;
 	});
 	var shiftedOutputVariableValues = {};
 	var grouping = $('.select-duration .active').attr('grouping');
-	var outputDates = $.map(outputVariableValues, function(value, index) {
+	var outputDates = $.map(outputValuesIndexedByStartTimeMilliseconds, function(value, index) {
 		var shiftedDate = shiftDate(grouping, index);
 		shiftedOutputVariableValues[shiftedDate] = value;
 		return shiftedDate;
@@ -595,7 +605,7 @@ function fillUpByDefaultValue(xDefaultValue, yDefaultValue) {
 	var xValues = [];
 	var yValues = [];
 	$.each(dates, function(idx, date) {
-		var inputVar = inputVariableValues[date];
+		var inputVar = inputVariableMeasurements[date];
 		inputVar = (inputVar == undefined ? xDefaultValue : inputVar);
 		xValues.push([ Number(date), inputVar ]);
 		var outputVar = shiftedOutputVariableValues[date];
@@ -613,12 +623,12 @@ function fillUpByDefaultValue(xDefaultValue, yDefaultValue) {
 }
 
 function fillUpByInterpolatedValues() {
-	var dates = $.map(inputVariableValues, function(value, index) {
+	var dates = $.map(inputVariableMeasurements, function(value, index) {
 		return index;
 	});
 	var shiftedOutputVariableValues = {};
 	var grouping = $('.select-duration .active').attr('grouping');
-	var outputDates = $.map(outputVariableValues, function(value, index) {
+	var outputDates = $.map(outputValuesIndexedByStartTimeMilliseconds, function(value, index) {
 		var shiftedDate = shiftDate(grouping, index);
 		shiftedOutputVariableValues[shiftedDate] = value;
 		return shiftedDate;
@@ -645,38 +655,39 @@ function fillUpByInterpolatedValues() {
 
 	$.each(dates, function(idx, date) {
 		var addToXy = true;
-		var inputVar = inputVariableValues[date];
+		var inputVar = inputVariableMeasurements[date];
 		var outputVar = shiftedOutputVariableValues[date];
+		var avg;
 
-		if (inputVar == undefined && outputVar != undefined) {
+		if (inputVar === undefined && outputVar !== undefined) {
 			outputValuesForBlankInput.push(outputVar);
 			inputDatesCache.push(date);
 			addToXy = false;
 		}
 
-		if (outputVar == undefined && inputVar != undefined) {
+		if (outputVar === undefined && inputVar !== undefined) {
 			inputValuesForBlankOutput.push(inputVar);
 			outputDatesCache.push(date);
 			addToXy = false;
 		}
 
-		if (inputVar == undefined && inputStart == undefined) {
+		if (inputVar === undefined && inputStart === undefined) {
 			inputStart = 0;
-		} else if (inputVar != undefined && (inputStart == undefined || outputValuesForBlankInput.length == 0)) {
+		} else if (inputVar !== undefined && (inputStart === undefined || outputValuesForBlankInput.length === 0)) {
 			inputStart = inputVar;
 		}
-		if (inputVar != undefined) {
+		if (inputVar !== undefined) {
 			inputEnd = inputVar;
 			xValues.push([ Number(date), inputVar ]);
 		}
 
-		if (outputVar == undefined && outputStart == undefined) {
+		if (outputVar === undefined && outputStart === undefined) {
 			outputStart = 0;
-		} else if (outputVar != undefined && (outputStart == undefined || inputValuesForBlankOutput.length == 0)) {
+		} else if (outputVar !== undefined && (outputStart === undefined || inputValuesForBlankOutput.length === 0)) {
 			outputStart = outputVar;
 		}
 
-		if (outputVar != undefined) {
+		if (outputVar !== undefined) {
 			outputEnd = outputVar;
 			yValues.push([ Number(date), outputVar ]);
 		}
@@ -686,13 +697,12 @@ function fillUpByInterpolatedValues() {
 		}
 
 		if (outputValuesForBlankInput.length > 0) {
-			if (inputStart != undefined && inputEnd != undefined) {
-				var avg = (inputStart + inputEnd) / 2;
+			if (inputStart !== undefined && inputEnd !== undefined) {
+				avg = (inputStart + inputEnd) / 2;
 				for ( var i = 0; i < outputValuesForBlankInput.length; i++) {
 					xyVariableValues.push([ avg, outputValuesForBlankInput[i] ]);
 					xValues.push([ Number(inputDatesCache[i]), avg ]);
 				}
-				;
 				outputValuesForBlankInput = [];
 				inputDatesCache = [];
 				inputStart = inputEnd;
@@ -702,32 +712,31 @@ function fillUpByInterpolatedValues() {
 		}
 
 		if (inputValuesForBlankOutput.length > 0) {
-			if (outputStart != undefined && outputEnd != undefined) {
-				var avg = (outputStart + outputEnd) / 2;
+			if (outputStart !== undefined && outputEnd !== undefined) {
+				avg = (outputStart + outputEnd) / 2;
 				for ( var i = 0; i < inputValuesForBlankOutput.length; i++) {
 					xyVariableValues.push([ inputValuesForBlankOutput[i], avg ]);
 					yValues.push([ Number(outputDatesCache[i]), avg ]);
 				}
-				;
 				inputValuesForBlankOutput = [];
 				outputDatesCache = [];
 				outputStart = outputEnd;
 				outputEnd = undefined;
 			}
-			return;
+
 		}
 
 	});
 
 	inputEnd = 0;
 	if (outputValuesForBlankInput.length > 0) {
-		if (inputStart != undefined && inputEnd != undefined) {
-			var avg = (inputStart + inputEnd) / 2;
-			for ( var i = 0; i < outputValuesForBlankInput.length; i++) {
+		if (inputStart !== undefined && inputEnd !== undefined) {
+			avg = (inputStart + inputEnd) / 2;
+			for ( i = 0; i < outputValuesForBlankInput.length; i++) {
 				xyVariableValues.push([ avg, outputValuesForBlankInput[i] ]);
 				xValues.push([ Number(inputDatesCache[i]), avg ]);
 			}
-			;
+
 			outputValuesForBlankInput = [];
 			inputDatesCache = [];
 			inputStart = inputEnd;
@@ -736,13 +745,13 @@ function fillUpByInterpolatedValues() {
 	}
 	outputEnd = 0;
 	if (inputValuesForBlankOutput.length > 0) {
-		if (outputStart != undefined && outputEnd != undefined) {
-			var avg = (outputStart + outputEnd) / 2;
-			for ( var i = 0; i < inputValuesForBlankOutput.length; i++) {
+		if (outputStart !== undefined && outputEnd !== undefined) {
+			avg = (outputStart + outputEnd) / 2;
+			for ( i = 0; i < inputValuesForBlankOutput.length; i++) {
 				xyVariableValues.push([ inputValuesForBlankOutput[i], avg ]);
 				yValues.push([ Number(outputDatesCache[i]), avg ]);
 			}
-			;
+
 			inputValuesForBlankOutput = [];
 			outputDatesCache = [];
 			outputStart = outputEnd;
@@ -752,10 +761,10 @@ function fillUpByInterpolatedValues() {
 
 	drawScatterplot();
 	xValues.sort(function(a, b) {
-		return a[0] > b[0] ? 1 : (a[0] == b[0] ? 0 : -1);
+		return a[0] > b[0] ? 1 : (a[0] === b[0] ? 0 : -1);
 	});
 	yValues.sort(function(a, b) {
-		return a[0] > b[0] ? 1 : (a[0] == b[0] ? 0 : -1);
+		return a[0] > b[0] ? 1 : (a[0] === b[0] ? 0 : -1);
 	});
 
 	drawTimeLineChart(xValues, yValues);
@@ -782,14 +791,14 @@ function saveVariableSettings(inputVarType, inputVarId, outputVarType, outputVar
 }
 
 function drawTimeLineChart(xValues, yValues) {
-	if (timeShiftedValue == null) {
-		timeLineOptions.series[0].name = inputVariableMeasurements.name + ", " + inputVariableMeasurements.unitDto.name;
+	if (timeShiftedValue === null) {
+		timeLineOptions.series[0].name = inputVariableMeasurementsFromApi[0].variableName + ", " + inputVariableMeasurementsFromApi[0].abbreviatedUnitName;
 		timeLineOptions.series[0].data = xValues;
-		timeLineOptions.series[1].name = outputVariableMeasurements.name + ", " + outputVariableMeasurements.unitDto.name;
+		timeLineOptions.series[1].name = outputVariableMeasurementsFromApi[0].variableName + ", " + outputVariableMeasurementsFromApi[0].abbreviatedUnitName;
 		timeLineOptions.series[1].data = yValues;
 
-		timeLineOptions.yAxis[0].title.text = inputVariableMeasurements.name;
-		timeLineOptions.yAxis[1].title.text = outputVariableMeasurements.name;
+		timeLineOptions.yAxis[0].title.text = inputVariableMeasurementsFromApi[0].variableName;
+		timeLineOptions.yAxis[1].title.text = outputVariableMeasurementsFromApi[0].variableName;
 		timeLineChart = new Highcharts.Chart(timeLineOptions);
 	} else {
 		for ( var i = 0; i < timeLineChart.series[0].data.length; i++) {
@@ -806,10 +815,11 @@ function drawTimeLineChart(xValues, yValues) {
 function drawScatterplot() {
 	scatterplotOptions.series[0].name = $('.select-duration .active').html() + " grouping";
 	scatterplotOptions.series[0].data = xyVariableValues;
-	scatterplotOptions.xAxis.title.text = inputVariableMeasurements.name;
-	scatterplotOptions.yAxis.title.text = outputVariableMeasurements.name;
+	scatterplotOptions.xAxis.title.text = inputVariableMeasurementsFromApi[0].variableName;
+	scatterplotOptions.yAxis.title.text = outputVariableMeasurementsFromApi[0].variableName;
 	scatterplotOptions.tooltip.formatter = function() {
-		return '' + this.x + ' ' + inputVariableMeasurements.unitDto.name + ', ' + this.y + ' ' + outputVariableMeasurements.unitDto.name;
+		return '' + this.x + ' ' + inputVariableMeasurementsFromApi[0].abbreviatedUnitName + ', ' + this.y + ' ' +
+			outputVariableMeasurementsFromApi[0].abbreviatedUnitName;
 	};
 	scatterplotChart = new Highcharts.Chart(scatterplotOptions);
 
@@ -849,5 +859,5 @@ function adjustPointer(calculatedPearsonCoeff) {
 		ctx1.translate(-xpos - 12, -ypos - 33);
 		ctx1.restore();
 	};
-	pointerImage.src = '/imgs/pointer-image.png';
+	pointerImage.src = '/original/imgs/pointer-image.png';
 }
