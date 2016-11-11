@@ -724,9 +724,11 @@ input#loginShow{
    Footer Area Start
    ========================================================================== */
 footer {
-	position: relative;
+	position: absolute;
+	width: 100%;
 	background: #999933;
 	padding-top: 30px;
+	bottom: 0;
 }
 
 .social-sharing {
@@ -788,8 +790,8 @@ footer {
 	margin: 0 auto;
 	margin-top: -70px;
 	background-image: url(../imgs/data-city-transparent.png);
-	width: 783px;
-	height: 153px;
+	width: 896px;
+	height: 422px;
 	z-index: 2;
 }
 
