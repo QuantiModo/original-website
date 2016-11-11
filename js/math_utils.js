@@ -42,13 +42,13 @@ mathUtils.calculatePearsonsCorrelation = function(xyValues)
 
 
 mathUtils.calculatePearsonsCorrelationSignificance=function(pearsonCoeffitient) {
-	if (pearsonCoeffitient < -0.5) return "Strongly Negative";
+	if (pearsonCoeffitient < -0.5) return "Strong Negative";
 	if (pearsonCoeffitient < -0.3) return "Moderately Negative";
-	if (pearsonCoeffitient < -0.1) return "Weakly Negative";
+	if (pearsonCoeffitient < -0.1) return "Weak Negative";
 	if (pearsonCoeffitient < 0.1) return "No";
-	if (pearsonCoeffitient < 0.3) return "Weakly Positive";
+	if (pearsonCoeffitient < 0.3) return "Weak Positive";
 	if (pearsonCoeffitient <= 0.5) return "Moderately Positive";
-	if (pearsonCoeffitient > 0.5) return "Strongly Positive";
+	if (pearsonCoeffitient > 0.5) return "Strong Positive";
 };
 
 
