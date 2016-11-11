@@ -17,6 +17,7 @@ html.wait, html.wait * {cursor:wait;}
 
 body {
 	/*background: #1D1D1D url(../imgs/windowblind-bg.png) 0px 233px repeat-x;*/
+	background: #1D1D1D;
 	line-height: 1.4 !important;
 	font-family: "Vegur";
 }
@@ -1207,16 +1208,16 @@ section#experiment {
 	height: 26px !important;
 }
 
-.statistical-relation {
+.statistical-relationship-gauge {
 	width: 260px;
 	height: 94px;
-	background: url(../imgs/statistical-relation.png) center top no-repeat;
+	background: url(../imgs/statistical-relationship-gauge.png) center top no-repeat;
 	position: absolute;
 	left: 355px;
 	top: -23px;
 }
 
-.statistical-relation h4 {
+.statistical-relationship-gauge h4 {
 	position: absolute;
 	left: 4px;
 	top: 73px;

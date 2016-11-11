@@ -558,7 +558,7 @@ function drawPearsonCoeff(pearsonCoeff) {
 	var pearsonCoeffSignificance = mathUtils.calculatePearsonsCorrelationSignificance(pearsonCoeff);
 	var customizedSigMessage = significanceMessage.replace("{1}", pearsonCoeffSignificance).replace("{2}",
 			inputVariableMeasurements.name).replace("{3}", outputVariableMeasurements.name);
-	$('.statistical-relation h4').html(customizedSigMessage + " " + Math.round(pearsonCoeff * 100) + "%");
+	$('.statistical-relationship-gauge h4').html(customizedSigMessage + " " + Math.round(pearsonCoeff * 100) + "%");
 	adjustPointer(pearsonCoeff);
 }
 
