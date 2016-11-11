@@ -46,9 +46,9 @@ mathUtils.calculatePearsonsCorrelationSignificance=function(pearsonCoeffitient) 
 	if (pearsonCoeffitient < -0.3) return "Medium Negative";
 	if (pearsonCoeffitient < -0.1) return "Small Negative";
 	if (pearsonCoeffitient < 0.1) return "No";
-	if (pearsonCoeffitient < 0.3) return "Small";
-	if (pearsonCoeffitient < 0.5) return "Medium";
-	if (pearsonCoeffitient >= 0.5) return "Large";
+	if (pearsonCoeffitient < 0.3) return "Small Positive";
+	if (pearsonCoeffitient <= 0.5) return "Medium Positive";
+	if (pearsonCoeffitient > 0.5) return "Large Positive";
 }
 
 
