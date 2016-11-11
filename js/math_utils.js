@@ -42,14 +42,14 @@ mathUtils.calculatePearsonsCorrelation = function(xyValues)
 
 
 mathUtils.calculatePearsonsCorrelationSignificance=function(pearsonCoeffitient) {
-	if (pearsonCoeffitient < -0.5) return "Large Negative";
-	if (pearsonCoeffitient < -0.3) return "Medium Negative";
-	if (pearsonCoeffitient < -0.1) return "Small Negative";
+	if (pearsonCoeffitient < -0.5) return "Strongly Negative";
+	if (pearsonCoeffitient < -0.3) return "Moderately Negative";
+	if (pearsonCoeffitient < -0.1) return "Weakly Negative";
 	if (pearsonCoeffitient < 0.1) return "No";
-	if (pearsonCoeffitient < 0.3) return "Small";
-	if (pearsonCoeffitient < 0.5) return "Medium";
-	if (pearsonCoeffitient >= 0.5) return "Large";
-}
+	if (pearsonCoeffitient < 0.3) return "Weakly Positive";
+	if (pearsonCoeffitient <= 0.5) return "Moderately Positive";
+	if (pearsonCoeffitient > 0.5) return "Strongly Positive";
+};
 
 
 // objectWithValues={"a":1,"b":2,...}
@@ -62,4 +62,4 @@ mathUtils.calculateAverageForObjectValues=function(objectWithValues){
 		size++;
 	});
 	return average/size;
-}
+};
