@@ -16,7 +16,7 @@ html,button,input,select,textarea {
 html.wait, html.wait * {cursor:wait;}
 
 body {
-	background: #1D1D1D url(../imgs/windowblind-bg.png) 0px 233px repeat-x;
+	/*background: #1D1D1D url(../imgs/windowblind-bg.png) 0px 233px repeat-x;*/
 	line-height: 1.4 !important;
 	font-family: "Vegur";
 }
@@ -119,24 +119,13 @@ h1,h2,h3,h4,h5,h6 {
 /* ==========================================================================
    Header Area Start
    ========================================================================== */
-.main-container {
-	width: 970px;
-	margin: 0 auto;
-}
 
 header {
 }
 
 .header-inner {
 	position: relative;
-	background: #1D1D1D url(../imgs/rainbow-bg.png) center top repeat-y;
-}
-
-.header-inner.analysis {
-	position: relative;
-	/* background: #006eff; */
-	background: #000;
-	height: 70px;
+	background: #333333 url(../imgs/rainbow-bg.png) center top repeat-y;
 }
 
 #logo {
@@ -587,36 +576,7 @@ input#loginShow{
     top: 169px;
 }
 
-/*
-.bubble-text{
-    width: 230px;
-    height: 200px;
-    position: absolute;
-    left: 25px;
-    top: 168px;
-}
-.bubble-text.second{
-    left: 309px;
-    top: 292px;
-}
-.bubble-text.third{
-    left: auto;
-    right: 25px;
-    top: 169px;
-}
 
-
-.qtip-default {
-	background-color: #FFFFFF;
-	border-color: #000000;
-	border-style: solid;
-	border-width: 3px;
-	color: #000000;
-	border-radius: 30px;
-	-moz-border-radius: 30px;
-	-webkit-border-radius: 30px;
-}
-*/
 /****************************************************/
 #qtip-0{
 }
@@ -715,48 +675,48 @@ input#loginShow{
 	line-height: 20px;
 }
 
-.lm-left {
+.learn-more-left {
 	position: absolute;
 	display: block;
 	left: 105px;
 	top: 535px;
 	width: 54px;
 	height: 54px;
-	background: url(../imgs/lm-btns.png) no-repeat;
+	background: url(../imgs/learn-more-btns.png) no-repeat;
 	background-position: 0px 0px;
 }
 
-.lm-left:hover {
+.learn-more-left:hover {
 	background-position: -55px 0px;
 }
 
-.lm-center {
+.learn-more-center {
 	position: absolute;
 	display: block;
 	left: 394px;
 	top: 662px;
 	width: 54px;
 	height: 54px;
-	background: url(../imgs/lm-btns.png) no-repeat;
+	background: url(../imgs/learn-more-btns.png) no-repeat;
 	background-position: 0px 0px;
 }
 
-.lm-center:hover {
+.learn-more-center:hover {
 	background-position: -110px 0px;
 }
 
-.lm-right {
+.learn-more-right {
 	position: absolute;
 	display: block;
 	left: 685px;
 	top: 534px;
 	width: 54px;
 	height: 54px;
-	background: url(../imgs/lm-btns.png) no-repeat;
+	background: url(../imgs/learn-more-btns.png) no-repeat;
 	background-position: 0px 0px;
 }
 
-.lm-right:hover {
+.learn-more-right:hover {
 	background-position: -165px 0px;
 }
 
@@ -1517,7 +1477,6 @@ margin: 0 17px 0 0;
 }
 
 section#correlations {
-	background-color: #cccccc;
 	position: relative;
 	width: 952px;
 	min-height: 120px;

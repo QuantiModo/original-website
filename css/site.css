@@ -714,48 +714,48 @@ input#loginShow{
 	line-height: 20px;
 }
 
-.lm-left {
+.learn-more-left {
 	position: absolute;
 	display: block;
 	left: 105px;
 	top: 535px;
 	width: 54px;
 	height: 54px;
-	background: url(../imgs/lm-btns.png) no-repeat;
+	background: url(../imgs/learn-more-btns.png) no-repeat;
 	background-position: 0px 0px;
 }
 
-.lm-left:hover {
+.learn-more-left:hover {
 	background-position: -55px 0px;
 }
 
-.lm-center {
+.learn-more-center {
 	position: absolute;
 	display: block;
 	left: 394px;
 	top: 662px;
 	width: 54px;
 	height: 54px;
-	background: url(../imgs/lm-btns.png) no-repeat;
+	background: url(../imgs/learn-more-btns.png) no-repeat;
 	background-position: 0px 0px;
 }
 
-.lm-center:hover {
+.learn-more-center:hover {
 	background-position: -110px 0px;
 }
 
-.lm-right {
+.learn-more-right {
 	position: absolute;
 	display: block;
 	left: 685px;
 	top: 534px;
 	width: 54px;
 	height: 54px;
-	background: url(../imgs/lm-btns.png) no-repeat;
+	background: url(../imgs/learn-more-btns.png) no-repeat;
 	background-position: 0px 0px;
 }
 
-.lm-right:hover {
+.learn-more-right:hover {
 	background-position: -165px 0px;
 }
 
