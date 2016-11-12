@@ -521,48 +521,48 @@ header {
 .qtip-default h4{
     line-height: 20px;
 }
-.lm-left {
+.learn-more-left {
     position: absolute;
     display: block;
     left: 105px;
     top: 535px;
     width: 53px;
     height: 53px;
-    background: url(../imgs/lm-left.png) no-repeat;
+    background: url(../imgs/learn-more-left.png) no-repeat;
     background-position: -59px -275px;
 }
 
-.lm-left:hover {
+.learn-more-left:hover {
     background-position: 0px 0px;
 }
 
-.lm-center {
+.learn-more-center {
     position: absolute;
     display: block;
     left: 395px;
     top: 661px;
     width: 54px;
     height: 54px;
-    background: url(../imgs/lm-center.png) no-repeat;
+    background: url(../imgs/learn-more-center.png) no-repeat;
     background-position: -59px -334px;
 }
 
-.lm-center:hover {
+.learn-more-center:hover {
     background-position: 0px 0px;
 }
 
-.lm-right {
+.learn-more-right {
     position: absolute;
     display: block;
     left: 686px;
     top: 533px;
     width: 54px;
     height: 54px;
-    background: url(../imgs/lm-right.png) no-repeat;
+    background: url(../imgs/learn-more-right.png) no-repeat;
     background-position: -59px -393px;
 }
 
-.lm-right:hover {
+.learn-more-right:hover {
     background-position: 0px 0px;
 }
    

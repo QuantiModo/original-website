@@ -8,7 +8,7 @@ $(document).ready(function() {
 function drawPearsonCoeff(pearsonCoeff) {
 	var pearsonCoeffSignificance = mathUtils.calculatePearsonsCorrelationSignificance(pearsonCoeff);
 	var customizedSigMessage = pearsonCoeffSignificance + ' Relationship';
-	$('.statistical-relation h4').html(customizedSigMessage);
+	$('.statistical-relationship-gauge h4').html(customizedSigMessage);
 	adjustPointer(pearsonCoeff);
 }
 

@@ -16,12 +16,14 @@ html,button,input,select,textarea {
 html.wait, html.wait * {cursor:wait;}
 
 body {
-	background: #1D1D1D url(../imgs/windowblind-bg.png) 0px 233px repeat-x;
+	/*background: #1D1D1D url(../imgs/windowblind-bg.png) 0px 233px repeat-x;*/
+	background: #1D1D1D;
 	line-height: 1.4 !important;
 	font-family: "Vegur";
 }
 
 .main-container {
+	background-color: #cccccc;
 	font-size: 16px !important;
 }
 
@@ -118,24 +120,14 @@ h1,h2,h3,h4,h5,h6 {
 /* ==========================================================================
    Header Area Start
    ========================================================================== */
-.main-container {
-	width: 970px;
-	margin: 0 auto;
-}
 
 header {
 }
 
 .header-inner {
 	position: relative;
-	background: #1D1D1D url(../imgs/rainbow-bg.png) center top repeat-y;
-}
-
-.header-inner.analysis {
-	position: relative;
-	/* background: #006eff; */
-	background: #000;
-	height: 70px;
+	background: #333333 url(../imgs/trasparent-header-spacer-thing.png) center top repeat-y;
+	/*background: #333333 url(../imgs/rainbow-bg.png) center top repeat-y;*/
 }
 
 #logo {
@@ -586,36 +578,7 @@ input#loginShow{
     top: 169px;
 }
 
-/*
-.bubble-text{
-    width: 230px;
-    height: 200px;
-    position: absolute;
-    left: 25px;
-    top: 168px;
-}
-.bubble-text.second{
-    left: 309px;
-    top: 292px;
-}
-.bubble-text.third{
-    left: auto;
-    right: 25px;
-    top: 169px;
-}
 
-
-.qtip-default {
-	background-color: #FFFFFF;
-	border-color: #000000;
-	border-style: solid;
-	border-width: 3px;
-	color: #000000;
-	border-radius: 30px;
-	-moz-border-radius: 30px;
-	-webkit-border-radius: 30px;
-}
-*/
 /****************************************************/
 #qtip-0{
 }
@@ -763,16 +726,19 @@ input#loginShow{
    Footer Area Start
    ========================================================================== */
 footer {
-	position: relative;
-	background: #92cbe4;
+	position: absolute;
+	width: 100%;
+	background: #999933;
 	padding-top: 30px;
+	bottom: 0;
 }
 
 .social-sharing {
 	width: 240px;
 	height: 119px;
-	background-image: url(../imgs/social-sharing.png);
+	background-image: url(../imgs/social-sharing-rainbow-tjasa-colors.png);
 	margin: 0 auto;
+	z-index: 25;
 }
 
 .social-sharing a {
@@ -816,18 +782,19 @@ footer {
 .rainbow-footer {
 	width: 74px;
 	height: 139px;
-	background: url(../imgs/rainbow-bg-footer.png) 0 0 repeat-y;
+	background: url(../imgs/rainbow-bg-footer-tjasa-colors.png) 0 0 repeat-y;
 	margin: 0 auto;
 }
 
 .cityscape {
 	position: relative;
 	left: 10px;
+	bottom: 0;
 	margin: 0 auto;
 	margin-top: -70px;
-	background-image: url(../imgs/cityscape.png);
-	width: 783px;
-	height: 153px;
+	background-image: url(../imgs/data-city-transparent.png);
+	width: 896px;
+	height: 422px;
 	z-index: 2;
 }
 
@@ -1252,7 +1219,7 @@ section#experiment {
 
 .statistical-relationship-gauge h4 {
 	position: absolute;
-	left: 4px;
+	left: 10px;
 	top: 73px;
 	font-family: "Cabin";
 	background: #000000;
@@ -1264,7 +1231,7 @@ section#experiment {
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
 	border-radius: 4px;
-	width: 225px;
+	width: 205px;
 	text-align: center;
 	text-transform: capitalize;
 }
