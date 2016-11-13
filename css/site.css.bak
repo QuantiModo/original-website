@@ -700,7 +700,7 @@ footer {
  * Image replacement
  */
 
-.ir {
+.image-replacement {
     background-color: transparent;
     border: 0;
     overflow: hidden;
@@ -708,7 +708,7 @@ footer {
     *text-indent: -9999px;
 }
 
-.ir:before {
+.image-replacement:before {
     content: "";
     display: block;
     width: 0;
@@ -770,7 +770,7 @@ footer {
      * Don't show links for imgs, or javascript/internal links
      */
 
-    .ir a:after,
+    .image-replacement a:after,
     a[href^="javascript:"]:after,
     a[href^="#"]:after {
         content: "";
