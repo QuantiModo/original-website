@@ -163,7 +163,7 @@ define(function() {
 			saveAggregatedVariable(variableSettings.id, categorySelect, variableSelect, behaviour);
 		});
 
-		var selectedCategory = variableSettings.categoryId ? variableSettings.categoryId
+		var selectedCategory = variableSettings.variableCategoryId ? variableSettings.variableCategoryId
 				: variableSettings.selectedCategory;
 
 		$("#edit_aggregated_variable_category").val(selectedCategory);
