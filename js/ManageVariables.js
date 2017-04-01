@@ -541,7 +541,7 @@ define(function() {
 			}
 			App.loadMustacheTemplate("variablesMgmtTemplates.html", "addEditCategory", function(template) {
 				var html = template.render({
-					category : category,
+					variableCategoryName : category,
 					variables : variables,
 					global : category && category.global
 				});
