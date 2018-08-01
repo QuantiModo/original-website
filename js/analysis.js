@@ -792,9 +792,9 @@ function saveVariableSettings(inputVarType, inputVarId, outputVarType, outputVar
 
 function drawTimeLineChart(xValues, yValues) {
 	if (timeShiftedValue === null) {
-		timeLineOptions.series[0].name = inputVariableMeasurementsFromApi[0].variableName + ", " + inputVariableMeasurementsFromApi[0].abbreviatedUnitName;
+		timeLineOptions.series[0].name = inputVariableMeasurementsFromApi[0].variableName + ", " + inputVariableMeasurementsFromApi[0].unitAbbreviatedName;
 		timeLineOptions.series[0].data = xValues;
-		timeLineOptions.series[1].name = outputVariableMeasurementsFromApi[0].variableName + ", " + outputVariableMeasurementsFromApi[0].abbreviatedUnitName;
+		timeLineOptions.series[1].name = outputVariableMeasurementsFromApi[0].variableName + ", " + outputVariableMeasurementsFromApi[0].unitAbbreviatedName;
 		timeLineOptions.series[1].data = yValues;
 
 		timeLineOptions.yAxis[0].title.text = inputVariableMeasurementsFromApi[0].variableName;
@@ -818,8 +818,8 @@ function drawScatterplot() {
 	scatterplotOptions.xAxis.title.text = inputVariableMeasurementsFromApi[0].variableName;
 	scatterplotOptions.yAxis.title.text = outputVariableMeasurementsFromApi[0].variableName;
 	scatterplotOptions.tooltip.formatter = function() {
-		return '' + this.x + ' ' + inputVariableMeasurementsFromApi[0].abbreviatedUnitName + ', ' + this.y + ' ' +
-			outputVariableMeasurementsFromApi[0].abbreviatedUnitName;
+		return '' + this.x + ' ' + inputVariableMeasurementsFromApi[0].unitAbbreviatedName + ', ' + this.y + ' ' +
+			outputVariableMeasurementsFromApi[0].unitAbbreviatedName;
 	};
 	scatterplotChart = new Highcharts.Chart(scatterplotOptions);
 
